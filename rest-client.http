@@ -1,0 +1,2 @@
+
+GET http://localhost:7090/api/profile/handle/SiddharthShrivastava HTTP/1.1
