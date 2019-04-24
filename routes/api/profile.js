@@ -53,11 +53,13 @@ profile.post('/profile', passport.authenticate('jwt', { session: false }), (req,
 					}
 				});
 			new profileSchema(profileFields)
-				.save(function(err){
-                  if(err){
-                      console.err("Error while saving profile \n",err);
-                  }
-                });
+				.save()
+				.then((profile) => {
+				  res.json(profile);
+				})
+				.catch((err) => {
+					console.error('Error while saving profile schema.....', err);
+				});
 		}
 	});
 });
@@ -99,22 +101,24 @@ profile.get('/user/:user_id', (req, res) => {
 		});
 });
 
-profile.get('/experience/:exp_id', (req, res) => {
+profile.get('/experience/:exp_id', passport.authenticate('jwt', { session: false }),(req, res) => {
 	const errors = {};
+    console.log("Experience id .....",req.user.id );
 	profileSchema
-		.findOne({ user: req.params.exp_id })
+		.findOne({ user: req.user.id })
 		.populate('user', [ 'name', 'email', 'avatar' ])
 		.then((profile) => {
+            console.log("Profile.....",profile);
 			if (!profile) {
-				errors.noProfile = 'No user like this exist';
+				errors.noProfile = 'No user....... like this exist';
 				return res.status(404).json(errors);
 			}
-
-            console.log("Profile.....",profile)
-
-			//res.json(profile);
+           const removableIndex =  profile.experience.map((value)=> (value.id === req.params.exp_id));
+           profile.experience.splice(removableIndex,1);
+           profile.save().then(profile => res.json(profile)).catch(err=> res.status(404).json({error:err}));
 		})
 		.catch((error) => {
+            console.log("ERROR.......",error);
 			res.status(404).json({ profile: 'No profile for this user' });
 		});
 });
