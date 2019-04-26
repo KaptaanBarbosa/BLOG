@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/index.js",
-    "server": "nodemon server/index.js"
+    "server": "nodemon server/index.js",
+    "client": "npm start --prefix client",
+    "client-install": "npm install --prefix client",
+    "dev":"concurrently \" npm run server \" \"npm run client \""
   },
   "author": "siddharth shrivastava",
   "license": "ISC",
@@ -14,6 +17,7 @@
     "bcrypt": "^3.0.6",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "client": "0.0.1",
     "express": "^4.16.4",
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
